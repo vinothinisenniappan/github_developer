@@ -12,13 +12,14 @@ export default function DashboardPage({ username, onBack }) {
   const [data, setData] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
+  const API_URL = import.meta.env.VITE_API_URL;
 
   useEffect(() => {
     const fetchDeveloperData = async () => {
       try {
         setLoading(true);
         setError('');
-        const response = await fetch(`/api/developer/${username}`);
+        const response = await fetch(`${API_URL}/api/developer/${username}`);
         
         if (!response.ok) {
           throw new Error('Developer not found');
