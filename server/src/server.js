@@ -24,7 +24,23 @@ const getGitHubUser = async (username) => {
     });
     return response.data;
   } catch (error) {
-    throw new Error(`User not found: ${username}`);
+    const status = error.response?.status;
+
+    if (status === 404) {
+      const notFoundError = new Error(`User not found: ${username}`);
+      notFoundError.status = 404;
+      throw notFoundError;
+    }
+
+    if (status === 401 || status === 403) {
+      const authError = new Error('GitHub API authentication failed or rate limited');
+      authError.status = 502;
+      throw authError;
+    }
+
+    const apiError = new Error('Failed to fetch GitHub profile');
+    apiError.status = 502;
+    throw apiError;
   }
 };
 
@@ -89,7 +105,7 @@ app.get('/api/developer/:username', async (req, res) => {
       stats
     });
   } catch (error) {
-    res.status(404).json({ error: error.message });
+    res.status(error.status || 500).json({ error: error.message });
   }
 });
 

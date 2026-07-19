@@ -8,34 +8,125 @@ import TopRepositories from '../components/TopRepositories';
 import ActivityChart from '../components/ActivityChart';
 import ErrorState from '../components/ErrorState';
 
+// const GITHUB_API_URL = 'https://api.github.com';
+
+// async function fetchJson(url) {
+//   const response = await fetch(url, {
+//     headers: {
+//       Accept: 'application/vnd.github.v3+json'
+//     }
+//   });
+
+//   if (!response.ok) {
+//     let message = `Request failed (${response.status})`;
+
+//     try {
+//       const payload = await response.json();
+//       if (payload?.message) {
+//         message = payload.message;
+//       } else if (payload?.error) {
+//         message = payload.error;
+//       }
+//     } catch {
+//       // Use the generic status-based message when the body is not JSON.
+//     }
+
+//     const error = new Error(message);
+//     error.status = response.status;
+//     throw error;
+//   }
+
+//   return response.json();
+// }
+
+// async function fetchGitHubRepos(username, page = 1, perPage = 100) {
+//   const url = new URL(`${GITHUB_API_URL}/users/${encodeURIComponent(username)}/repos`);
+//   url.searchParams.set('sort', 'updated');
+//   url.searchParams.set('direction', 'desc');
+//   url.searchParams.set('per_page', String(perPage));
+//   url.searchParams.set('page', String(page));
+
+//   return fetchJson(url.toString());
+// }
+
+// function calculateStats(repos) {
+//   const stats = {
+//     totalRepos: repos.length,
+//     totalStars: 0,
+//     totalForks: 0,
+//     languages: {},
+//     topLanguages: [],
+//     createdByYear: {},
+//     averageStars: 0,
+//     averageForks: 0
+//   };
+
+//   repos.forEach((repo) => {
+//     stats.totalStars += repo.stargazers_count || 0;
+//     stats.totalForks += repo.forks_count || 0;
+
+//     if (repo.language) {
+//       stats.languages[repo.language] = (stats.languages[repo.language] || 0) + 1;
+//     }
+
+//     const year = new Date(repo.created_at).getFullYear();
+//     stats.createdByYear[year] = (stats.createdByYear[year] || 0) + 1;
+//   });
+
+//   stats.averageStars = repos.length > 0 ? Math.round(stats.totalStars / repos.length) : 0;
+//   stats.averageForks = repos.length > 0 ? Math.round(stats.totalForks / repos.length) : 0;
+
+//   stats.topLanguages = Object.entries(stats.languages)
+//     .map(([language, count]) => ({
+//       name: language,
+//       count,
+//       percentage: repos.length > 0 ? ((count / repos.length) * 100).toFixed(1) : 0
+//     }))
+//     .sort((a, b) => b.count - a.count)
+//     .slice(0, 10);
+
+//   stats.totalLanguages = Object.keys(stats.languages).length;
+
+//   return stats;
+// }
+
 export default function DashboardPage({ username, onBack }) {
   const [data, setData] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
-  const API_URL = import.meta.env.VITE_API_URL;
+  const API_URL = import.meta.env.VITE_API_URL?.replace(/\/$/, '');
+useEffect(() => {
+  const fetchDeveloperData = async () => {
+    try {
+      setLoading(true);
+      setError("");
 
-  useEffect(() => {
-    const fetchDeveloperData = async () => {
-      try {
-        setLoading(true);
-        setError('');
-        const response = await fetch(`${API_URL}/api/developer/${username}`);
-        
-        if (!response.ok) {
-          throw new Error('Developer not found');
-        }
-        
-        const result = await response.json();
-        setData(result);
-      } catch (err) {
-        setError(err.message || 'Failed to fetch developer data');
-      } finally {
-        setLoading(false);
+      const API_URL =
+        import.meta.env.VITE_API_URL || "https://github-developer.onrender.com";
+
+      const response = await fetch(
+        `${API_URL}/api/developer/${encodeURIComponent(username)}`
+      );
+
+      if (!response.ok) {
+        const errorData = await response.json().catch(() => null);
+
+        throw new Error(
+          errorData?.error || "Failed to fetch developer data"
+        );
       }
-    };
 
-    fetchDeveloperData();
-  }, [username]);
+      const result = await response.json();
+      setData(result);
+    } catch (err) {
+      setError(err.message || "Failed to fetch developer data");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  fetchDeveloperData();
+}, [username]);
 
   return (
     <div className="min-h-screen bg-background">
