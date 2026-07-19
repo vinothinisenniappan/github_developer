@@ -49,7 +49,9 @@ const getGitHubRepos = async (username, page = 1, perPage = 100) => {
 };
 
 // Routes
-
+app.get("/", (req, res) => {
+  res.send("GitHub Developer Insights API is running 🚀");
+});
 // Health check
 app.get('/api/health', (req, res) => {
   res.json({ status: 'Server running', timestamp: new Date().toISOString() });
