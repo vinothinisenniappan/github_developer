@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Github, ArrowRight } from 'lucide-react';
+import { Github, ArrowRight, BarChart3, Code2, Activity } from 'lucide-react';
 
 export default function LandingPage({ onSearch }) {
   const [username, setUsername] = useState('');
@@ -25,12 +25,12 @@ export default function LandingPage({ onSearch }) {
     <div className="min-h-screen bg-gradient-to-b from-background to-surface flex flex-col">
       {/* Header */}
       <header className="border-b border-border">
-        <div className="max-w-6xl mx-auto px-6 py-4 flex items-center gap-3">
+        <div className="w-full px-6 py-4 flex items-center gap-3">
           <Github size={32} className="text-primary" />
           <h1 className="text-2xl font-bold">GitHub Developer Insights</h1>
         </div>
       </header>
-
+<br></br>
       {/* Hero Section */}
       <main className="flex-1 flex items-center justify-center px-6">
         <div className="w-full max-w-2xl">
@@ -81,21 +81,27 @@ export default function LandingPage({ onSearch }) {
           {/* Info Cards */}
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
             <div className="card text-center">
-              <div className="text-3xl font-bold text-primary mb-2">📊</div>
+              <div className="inline-flex items-center justify-center w-12 h-12 rounded-xl bg-primary/10 text-primary mb-3">
+                <BarChart3 size={24} strokeWidth={2.1} />
+              </div>
               <h3 className="font-semibold mb-1">Repository Stats</h3>
               <p className="text-sm text-text-secondary">
                 Stars, forks, and activity metrics
               </p>
             </div>
             <div className="card text-center">
-              <div className="text-3xl font-bold text-primary mb-2">🗣️</div>
+              <div className="inline-flex items-center justify-center w-12 h-12 rounded-xl bg-primary/10 text-primary mb-3">
+                <Code2 size={24} strokeWidth={2.1} />
+              </div>
               <h3 className="font-semibold mb-1">Languages</h3>
               <p className="text-sm text-text-secondary">
                 Programming language distribution
               </p>
             </div>
             <div className="card text-center">
-              <div className="text-3xl font-bold text-primary mb-2">📈</div>
+              <div className="inline-flex items-center justify-center w-12 h-12 rounded-xl bg-primary/10 text-primary mb-3">
+                <Activity size={24} strokeWidth={2.1} />
+              </div>
               <h3 className="font-semibold mb-1">Trends</h3>
               <p className="text-sm text-text-secondary">
                 Creation timeline and insights
